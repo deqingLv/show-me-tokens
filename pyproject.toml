@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "show-me-tokens"
+version = "0.1.0"
+description = "CLI for reporting per-session token usage of AI IDE agents"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "lvdeqing" }]
+keywords = ["qoder", "ai-ide", "tokens", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Utilities",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+show-me-tokens = "show_me_tokens.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/lvdeqing/show-me-tokens"
+Repository = "https://github.com/lvdeqing/show-me-tokens"
+Issues = "https://github.com/lvdeqing/show-me-tokens/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/show_me_tokens"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
