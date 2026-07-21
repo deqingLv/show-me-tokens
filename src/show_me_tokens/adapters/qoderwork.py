@@ -46,6 +46,7 @@ class QoderWorkAdapter(AgentAdapter):
                     sc.session_id,
                     sc.mode,
                     sc.model_level,
+                    sc.ext,
                     sc.created_at AS sub_chat_created_at,
                     sc.updated_at AS sub_chat_updated_at,
                     c.name AS chat_name,
@@ -110,6 +111,11 @@ class QoderWorkAdapter(AgentAdapter):
         if not self._in_date_range(updated_at, filters):
             return None
 
+        title = row.get("sub_chat_name") or row.get("chat_name") or sub_chat_id
+
+        ext = self._try_json(row.get("ext"))
+        model_name = self._extract_ext_model(ext) or row.get("model_level")
+
         messages = conn.execute(
             """
             SELECT sequence, role, parts, metadata
@@ -121,7 +127,6 @@ class QoderWorkAdapter(AgentAdapter):
         ).fetchall()
 
         token_summary = TokenSummary()
-        model_name: str | None = None
         event_count = 0
 
         for msg in messages:
@@ -174,9 +179,6 @@ class QoderWorkAdapter(AgentAdapter):
 
         token_summary.recompute_total()
 
-        if model_name is None:
-            model_name = row.get("model_level")
-
         note: str | None = None
         if event_count == 0:
             note = (
@@ -188,6 +190,7 @@ class QoderWorkAdapter(AgentAdapter):
         return SessionUsage(
             agent=self.name,
             session_id=session_id,
+            title=title,
             chat_id=row.get("chat_id"),
             project_name=row.get("project_name"),
             workspace_path=workspace_path,
@@ -198,6 +201,19 @@ class QoderWorkAdapter(AgentAdapter):
             note=note,
             raw_source={"sub_chat_id": sub_chat_id, "mode": row.get("mode")},
         )
+
+    @staticmethod
+    def _extract_ext_model(data: Any) -> str | None:
+        """Extract model name from sub_chats.ext contextUsageSnapshot.model."""
+        if not isinstance(data, dict):
+            return None
+        snapshot = data.get("contextUsageSnapshot")
+        if not isinstance(snapshot, dict):
+            return None
+        value = snapshot.get("model")
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+        return None
 
     @staticmethod
     def _collect_token_events(value: Any, events: list[dict[str, Any]]) -> None:

@@ -68,10 +68,10 @@ def _create_qoderwork_db(path: Path) -> None:
     )
     conn.execute(
         """
-        INSERT INTO sub_chats (id, name, chat_id, session_id, mode, created_at, updated_at, model_level)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO sub_chats (id, name, chat_id, session_id, mode, created_at, updated_at, model_level, ext)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        ("sub-1", "agent", "chat-1", "session-1", "agent", 1781652000, 1781652200, "Auto"),
+        ("sub-1", "计算节点数量", "chat-1", "session-1", "agent", 1781652000, 1781652200, "qwork-auto", '{"contextUsageSnapshot":{"model":"qwork-ultimate"}}'),
     )
     parts = json.dumps(
         [
@@ -106,11 +106,34 @@ def test_collect_sessions(tmp_path: Path):
     usage = sessions[0]
     assert usage.agent == "qoderwork"
     assert usage.session_id == "session-1"
-    assert usage.model_name == "GLM-5.2"
+    assert usage.title == "计算节点数量"
+    assert usage.model_name == "qwork-ultimate"
     assert usage.tokens.input_tokens == 100
     assert usage.tokens.output_tokens == 20
     assert usage.tokens.cache_read_input_tokens == 30
     assert usage.tokens.total_tokens == 120
+
+
+def test_title_and_model_fallback(tmp_path: Path):
+    db = tmp_path / "agents.db"
+    _create_qoderwork_db(db)
+    conn = sqlite3.connect(db)
+    conn.execute(
+        "UPDATE sub_chats SET name = ?, ext = ?",
+        ("", '{}'),
+    )
+    conn.commit()
+    conn.close()
+
+    adapter = QoderWorkAdapter()
+    sessions = adapter.collect_sessions(db, SessionFilters())
+
+    assert len(sessions) == 1
+    usage = sessions[0]
+    # falls back to chats.name
+    assert usage.title == "hello"
+    # falls back to model_level
+    assert usage.model_name == "qwork-auto"
 
 
 def test_unavailable_token_status(tmp_path: Path):
