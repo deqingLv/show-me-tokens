@@ -97,6 +97,15 @@ def _build_parser() -> argparse.ArgumentParser:
             default="table",
             help="Output format (default: table).",
         )
+        sub.add_argument(
+            "--limit",
+            type=int,
+            metavar="N",
+            help=(
+                "Maximum number of sessions to display. "
+                "For table output the default is 20; use 0 for unlimited."
+            ),
+        )
         sub.set_defaults(func=_run_agent)
 
     return parser
@@ -126,9 +135,25 @@ def _run_agent(args: argparse.Namespace) -> int:
         print("No sessions matched the filters.", file=sys.stderr)
         return 0
 
+    limit = args.limit
+    if limit is None and args.format == "table":
+        limit = 20
+
+    if limit is not None and limit > 0:
+        sessions = _sort_by_total(sessions)[:limit]
+
     formatter = FORMATTERS[args.format]
     print(formatter(sessions))
     return 0
+
+
+def _sort_by_total(sessions: list[SessionUsage]) -> list[SessionUsage]:
+    """Return sessions sorted by total token usage descending."""
+    return sorted(
+        sessions,
+        key=lambda u: u.tokens.total_tokens or 0,
+        reverse=True,
+    )
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -17,11 +17,13 @@ def _create_qoder_db(path: Path) -> None:
         """
         CREATE TABLE chat_session (
             session_id TEXT PRIMARY KEY,
+            session_title TEXT,
+            preferred_model_info TEXT,
             project_uri TEXT,
             project_id TEXT,
+            project_name TEXT,
             gmt_create INTEGER,
             gmt_modified INTEGER,
-            last_user_query_at INTEGER,
             status TEXT
         );
         CREATE TABLE chat_message (
@@ -42,18 +44,18 @@ def _create_qoder_db(path: Path) -> None:
     conn.execute(
         """
         INSERT INTO chat_session
-        (session_id, project_uri, project_id, gmt_create, gmt_modified, status)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (session_id, session_title, preferred_model_info, project_uri, project_id, project_name, gmt_create, gmt_modified, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        ("session-1", "file:///Users/alice/project-a", "proj-1", 1781652000000, 1781652200000, "complete"),
+        ("session-1", "Project A summary", '{"preferred_model": "gm51model"}', "file:///Users/alice/project-a", "proj-1", "project-a", 1781652000000, 1781652200000, "complete"),
     )
     conn.execute(
         """
         INSERT INTO chat_session
-        (session_id, project_uri, project_id, gmt_create, gmt_modified, status)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (session_id, session_title, preferred_model_info, project_uri, project_id, project_name, gmt_create, gmt_modified, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
-        ("session-2", "file:///Users/alice/project-b", "proj-2", 1781652000000, 1781652000000, "complete"),
+        ("session-2", "", '{}', "file:///Users/alice/project-b", "proj-2", "project-b", 1781652000000, 1781652000000, "complete"),
     )
     conn.execute(
         """
@@ -100,12 +102,24 @@ def test_collect_sessions(tmp_path: Path):
     first = sessions[0]
     assert first.agent == "qoder"
     assert first.session_id == "session-1"
-    assert first.model_name == "GLM-5.1"
+    assert first.title == "Project A summary"
+    assert first.model_name == "gm51model"
     assert first.tokens.input_tokens == 180
     assert first.tokens.output_tokens == 30
     assert first.tokens.cache_read_input_tokens == 50
     assert first.tokens.total_tokens == 210
     assert "project-a" in (first.workspace_path or "")
+
+
+def test_title_fallback_to_session_id(tmp_path: Path):
+    db = tmp_path / "local.db"
+    _create_qoder_db(db)
+
+    adapter = QoderAdapter()
+    sessions = adapter.collect_sessions(db, SessionFilters())
+
+    second = [s for s in sessions if s.session_id == "session-2"][0]
+    assert second.title == "session-2"
 
 
 def test_filter_by_session_id(tmp_path: Path):
@@ -129,6 +143,49 @@ def test_filter_by_workspace(tmp_path: Path):
 
     assert len(sessions) == 1
     assert sessions[0].session_id == "session-1"
+
+
+def test_model_key_fallback(tmp_path: Path):
+    db = tmp_path / "local.db"
+    conn = sqlite3.connect(db)
+    conn.executescript(
+        """
+        CREATE TABLE chat_session (
+            session_id TEXT PRIMARY KEY,
+            session_title TEXT,
+            preferred_model_info TEXT,
+            project_uri TEXT,
+            project_id TEXT,
+            project_name TEXT,
+            gmt_create INTEGER,
+            gmt_modified INTEGER,
+            status TEXT
+        );
+        CREATE TABLE chat_message (
+            id TEXT PRIMARY KEY,
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            token_info TEXT,
+            model_info TEXT,
+            gmt_create INTEGER
+        );
+        """
+    )
+    conn.execute(
+        "INSERT INTO chat_session VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        ("s1", "", '{}', "file:///p", "p", "p", 0, 0, "complete"),
+    )
+    conn.execute(
+        "INSERT INTO chat_message VALUES (?, ?, ?, ?, ?, ?)",
+        ("m1", "s1", "assistant", '{"prompt_tokens": 1, "completion_tokens": 1}', '{"model_key": "gm51model"}', 0),
+    )
+    conn.commit()
+    conn.close()
+
+    adapter = QoderAdapter()
+    sessions = adapter.collect_sessions(db, SessionFilters())
+    assert len(sessions) == 1
+    assert sessions[0].model_name == "gm51model"
 
 
 def test_default_db_path_exists():

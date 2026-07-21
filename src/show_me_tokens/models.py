@@ -35,6 +35,7 @@ class SessionUsage:
 
     agent: str
     session_id: str
+    title: str | None = None
     chat_id: str | None = None
     project_name: str | None = None
     workspace_path: str | None = None

@@ -15,6 +15,7 @@ def _sample_sessions() -> list[SessionUsage]:
         SessionUsage(
             agent="qoder",
             session_id="session-1",
+            title="Hello world",
             model_name="GLM-5.1",
             updated_at=datetime(2026, 7, 21, 12, 0, 0, tzinfo=timezone.utc),
             tokens=TokenSummary(
@@ -30,7 +31,9 @@ def _sample_sessions() -> list[SessionUsage]:
 def test_format_table_includes_headers_and_total():
     text = format_table(_sample_sessions())
     assert "Agent" in text
+    assert "Title" in text
     assert "session-1" in text
+    assert "Hello world" in text
     assert "GLM-5.1" in text
     assert "120" in text
     assert "Total" in text

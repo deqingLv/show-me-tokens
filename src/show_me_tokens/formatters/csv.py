@@ -16,6 +16,7 @@ def format_csv(sessions: list[SessionUsage]) -> str:
         [
             "agent",
             "session_id",
+            "title",
             "chat_id",
             "project_name",
             "workspace_path",
@@ -35,6 +36,7 @@ def format_csv(sessions: list[SessionUsage]) -> str:
             [
                 usage.agent,
                 usage.session_id,
+                usage.title or "",
                 usage.chat_id or "",
                 usage.project_name or "",
                 usage.workspace_path or "",

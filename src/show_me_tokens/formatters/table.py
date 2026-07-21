@@ -13,6 +13,7 @@ def format_table(sessions: list[SessionUsage]) -> str:
     headers = [
         "Agent",
         "Session ID",
+        "Title",
         "Model",
         "Input",
         "Cache Read",
@@ -26,6 +27,7 @@ def format_table(sessions: list[SessionUsage]) -> str:
             [
                 usage.agent,
                 _shorten(usage.session_id, 24),
+                _shorten(usage.title or "", 30),
                 usage.model_name or "-",
                 _fmt(tokens.input_tokens),
                 _fmt(tokens.cache_read_input_tokens),
@@ -39,6 +41,7 @@ def format_table(sessions: list[SessionUsage]) -> str:
     rows.append(
         [
             "Total",
+            "",
             "",
             "",
             _fmt(totals["input_tokens"]),

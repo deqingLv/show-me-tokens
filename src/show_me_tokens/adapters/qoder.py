@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,7 +19,16 @@ class QoderAdapter(AgentAdapter):
     name: ClassVar[str] = "qoder"
 
     def default_db_path(self) -> Path:
-        return Path.home() / "Library" / "Application Support" / "Qoder" / "SharedClientCache" / "cache" / "db" / "local.db"
+        return (
+            Path.home()
+            / "Library"
+            / "Application Support"
+            / "Qoder"
+            / "SharedClientCache"
+            / "cache"
+            / "db"
+            / "local.db"
+        )
 
     def collect_sessions(
         self,
@@ -33,8 +41,11 @@ class QoderAdapter(AgentAdapter):
                 """
                 SELECT
                     session_id,
+                    session_title,
+                    preferred_model_info,
                     project_uri,
                     project_id,
+                    project_name,
                     gmt_create,
                     gmt_modified,
                     status
@@ -89,6 +100,10 @@ class QoderAdapter(AgentAdapter):
         if not self._in_date_range(updated_at, filters):
             return None
 
+        title = self._extract_title(session_row)
+        preferred_model = self._try_json(session_row.get("preferred_model_info"))
+        model_name = self._extract_preferred_model(preferred_model)
+
         messages = conn.execute(
             """
             SELECT
@@ -105,7 +120,6 @@ class QoderAdapter(AgentAdapter):
         ).fetchall()
 
         token_summary = TokenSummary()
-        model_name: str | None = None
 
         for msg in messages:
             token_info = self._try_json(msg["token_info"])
@@ -121,8 +135,8 @@ class QoderAdapter(AgentAdapter):
                     ) + int(cache)
 
             if model_name is None:
-                model_info = self._try_json(msg["model_info"])
-                model_name = self._extract_model_name(model_info)
+                message_model_info = self._try_json(msg["model_info"])
+                model_name = self._extract_model_name(message_model_info)
                 if model_name is None and isinstance(token_info, dict):
                     model_name = self._extract_model_name(token_info)
 
@@ -131,6 +145,7 @@ class QoderAdapter(AgentAdapter):
         return SessionUsage(
             agent=self.name,
             session_id=session_id,
+            title=title,
             workspace_path=workspace_path,
             model_name=model_name,
             created_at=created_at,
@@ -138,6 +153,22 @@ class QoderAdapter(AgentAdapter):
             tokens=token_summary,
             raw_source={"project_id": session_row.get("project_id")},
         )
+
+    @staticmethod
+    def _extract_title(session_row: dict[str, Any]) -> str:
+        title = session_row.get("session_title")
+        if isinstance(title, str) and title.strip():
+            return title.strip()
+        return session_row.get("session_id", "")
+
+    @staticmethod
+    def _extract_preferred_model(data: Any) -> str | None:
+        if not isinstance(data, dict):
+            return None
+        value = data.get("preferred_model")
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+        return None
 
     @staticmethod
     def _normalize_workspace(value: str | None) -> str | None:
@@ -184,7 +215,7 @@ class QoderAdapter(AgentAdapter):
     def _extract_model_name(data: Any) -> str | None:
         if not isinstance(data, dict):
             return None
-        for key in ("model_name", "model", "modelId", "model_id"):
+        for key in ("model_name", "model_key", "model", "modelId", "model_id"):
             value = data.get(key)
             if isinstance(value, str) and value.strip():
                 return value.strip()
