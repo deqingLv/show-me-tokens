@@ -179,6 +179,24 @@ Flow:
 - CLI tests verify subcommand dispatch, filter parsing, and exit codes.
 - No real IDE database is required; all access is against ephemeral fixtures.
 
+## README disclaimer
+
+The `README.md` must open with a clear disclaimer that the project is for learning and research use only, to mitigate legal risk around reading local IDE data structures:
+
+```markdown
+## 免责声明 / Disclaimer
+
+本项目（show-me-tokens）仅供个人学习、研究和交流使用。
+
+- 本项目不隶属于 Qoder、ByteDance 或任何其他 AI IDE 工具的开发商，也不受其认可。
+- 本项目仅读取用户本地设备上已存在的 SQLite 数据库文件，不会连接任何远程服务、API 或用户账户。
+- 本项目不对读取的数据进行上传、修改或删除操作。
+- 使用本项目前，请确保您拥有访问相关本地数据的合法权利，并遵守相应软件的服务条款及所在地法律法规。
+- 本项目按“原样”提供，作者不对使用本项目产生的任何直接或间接后果承担责任。
+
+This project is provided for personal learning, research, and communication purposes only. It is not affiliated with or endorsed by Qoder, ByteDance, or any other AI IDE vendor. It only reads local SQLite files already present on your device and does not connect to remote services, APIs, or user accounts. Please ensure you have the right to access the relevant local data and comply with the terms of service of the corresponding software and applicable laws. This project is provided "as is" without warranty.
+```
+
 ## Future work
 
 - Add new adapters by implementing `AgentAdapter` and registering the class: Cursor, Trae CN, Kiro, CodeBuddy, etc.
