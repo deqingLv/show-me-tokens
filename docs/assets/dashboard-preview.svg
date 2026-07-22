@@ -1,0 +1,185 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0EA5E9"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <style>
+      .bg { fill: #ffffff; }
+      .panel { fill: #f8fafc; stroke: #e2e8f0; }
+      .text { fill: #1e293b; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .muted { fill: #64748b; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .mono { fill: #64748b; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .label { fill: #64748b; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: .08em; }
+      .value { fill: #1e293b; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 30px; font-weight: 750; }
+      .small { font-size: 14px; }
+      .tiny { font-size: 12px; }
+      .head { font-size: 22px; font-weight: 760; }
+      .title { font-size: 16px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1440" height="900"/>
+  <rect x="0" y="0" width="1440" height="78" fill="#f8fafc" stroke="#e2e8f0"/>
+
+  <g transform="translate(80 20)">
+    <rect x="0" y="0" width="38" height="38" rx="10" fill="url(#accent)"/>
+    <path d="M11 14h16M11 20h22M11 26h12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+    <text x="52" y="19" class="text head">show-me-tokens</text>
+    <text x="52" y="39" class="muted small">Local AI IDE session token usage</text>
+  </g>
+
+  <g transform="translate(1110 20)">
+    <text x="0" y="25" class="label">AGENT</text>
+    <rect x="70" y="0" width="160" height="38" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="88" y="25" class="text small" font-weight="600">qoder</text>
+    <path d="M204 15l7 8 7-8" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(80 110)" filter="url(#shadow)">
+    <rect class="panel" width="1280" height="118" rx="16"/>
+    <g transform="translate(24 24)">
+      <text class="label" x="0" y="0">WORKSPACE PATH</text>
+      <rect x="0" y="14" width="280" height="42" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+      <text class="muted small" x="14" y="40">/path/to/project</text>
+
+      <text class="label" x="304" y="0">SESSION ID</text>
+      <rect x="304" y="14" width="220" height="42" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+      <text class="muted small" x="318" y="40">abc-123</text>
+
+      <text class="label" x="548" y="0">MODEL</text>
+      <rect x="548" y="14" width="180" height="42" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+      <text class="muted small" x="562" y="40">gm51</text>
+
+      <text class="label" x="752" y="0">SINCE</text>
+      <rect x="752" y="14" width="160" height="42" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+      <text class="muted small" x="766" y="40">2026-07-01</text>
+
+      <text class="label" x="936" y="0">UNTIL</text>
+      <rect x="936" y="14" width="160" height="42" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+      <text class="muted small" x="950" y="40">2026-07-21</text>
+
+      <rect x="1130" y="14" width="104" height="42" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+      <text class="muted small" x="1163" y="40" font-weight="600">Reset</text>
+    </g>
+  </g>
+
+  <g transform="translate(80 258)">
+    <g filter="url(#shadow)">
+      <rect class="panel" width="238" height="116" rx="16"/>
+      <rect x="0" y="0" width="4" height="116" rx="2" fill="#64748b"/>
+      <text x="24" y="34" class="label">SESSIONS</text>
+      <text x="24" y="76" class="value">128</text>
+    </g>
+    <g transform="translate(260 0)" filter="url(#shadow)">
+      <rect class="panel" width="238" height="116" rx="16"/>
+      <rect x="0" y="0" width="4" height="116" rx="2" fill="#0EA5E9"/>
+      <text x="24" y="34" class="label">INPUT</text>
+      <text x="24" y="76" class="value">62.7M</text>
+    </g>
+    <g transform="translate(520 0)" filter="url(#shadow)">
+      <rect class="panel" width="238" height="116" rx="16"/>
+      <rect x="0" y="0" width="4" height="116" rx="2" fill="#8B5CF6"/>
+      <text x="24" y="34" class="label">OUTPUT</text>
+      <text x="24" y="76" class="value">404K</text>
+    </g>
+    <g transform="translate(780 0)" filter="url(#shadow)">
+      <rect class="panel" width="238" height="116" rx="16"/>
+      <rect x="0" y="0" width="4" height="116" rx="2" fill="#F59E0B"/>
+      <text x="24" y="34" class="label">CACHE READ</text>
+      <text x="24" y="76" class="value">61.1M</text>
+    </g>
+    <g transform="translate(1040 0)" filter="url(#shadow)">
+      <rect class="panel" width="240" height="116" rx="16"/>
+      <rect x="0" y="0" width="4" height="116" rx="2" fill="#0EA5E9"/>
+      <text x="24" y="34" class="label">TOTAL</text>
+      <text x="24" y="76" class="value">63.1M</text>
+    </g>
+  </g>
+
+  <g transform="translate(80 405)" filter="url(#shadow)">
+    <rect class="panel" width="1280" height="245" rx="16"/>
+    <text x="24" y="34" class="text title">Token breakdown (cache is shown inside input)</text>
+    <g transform="translate(54 70)">
+      <line x1="0" y1="150" x2="1170" y2="150" stroke="#e2e8f0"/>
+      <line x1="0" y1="100" x2="1170" y2="100" stroke="#e2e8f0" stroke-dasharray="4 6"/>
+      <line x1="0" y1="50" x2="1170" y2="50" stroke="#e2e8f0" stroke-dasharray="4 6"/>
+
+      <g transform="translate(40 0)">
+        <rect x="0" y="20" width="52" height="110" rx="6" fill="#0EA5E9"/>
+        <rect x="0" y="20" width="52" height="96" rx="6" fill="#F59E0B"/>
+        <rect x="52" y="96" width="20" height="34" rx="6" fill="#8B5CF6"/>
+      </g>
+      <g transform="translate(180 0)">
+        <rect x="0" y="45" width="52" height="85" rx="6" fill="#0EA5E9"/>
+        <rect x="0" y="45" width="52" height="70" rx="6" fill="#F59E0B"/>
+        <rect x="52" y="102" width="18" height="28" rx="6" fill="#8B5CF6"/>
+      </g>
+      <g transform="translate(320 0)">
+        <rect x="0" y="58" width="52" height="72" rx="6" fill="#0EA5E9"/>
+        <rect x="0" y="58" width="52" height="65" rx="6" fill="#F59E0B"/>
+        <rect x="52" y="112" width="15" height="18" rx="6" fill="#8B5CF6"/>
+      </g>
+      <g transform="translate(460 0)">
+        <rect x="0" y="72" width="52" height="58" rx="6" fill="#0EA5E9"/>
+        <rect x="0" y="72" width="52" height="46" rx="6" fill="#F59E0B"/>
+        <rect x="52" y="105" width="28" height="25" rx="6" fill="#8B5CF6"/>
+      </g>
+      <g transform="translate(600 0)">
+        <rect x="0" y="84" width="52" height="46" rx="6" fill="#0EA5E9"/>
+        <rect x="0" y="84" width="52" height="39" rx="6" fill="#F59E0B"/>
+        <rect x="52" y="118" width="13" height="12" rx="6" fill="#8B5CF6"/>
+      </g>
+      <g transform="translate(850 14)">
+        <rect width="12" height="12" rx="3" fill="#0EA5E9"/><text x="20" y="11" class="muted tiny">Input (uncached)</text>
+        <rect x="150" width="12" height="12" rx="3" fill="#F59E0B"/><text x="170" y="11" class="muted tiny">Cache read</text>
+        <rect x="280" width="12" height="12" rx="3" fill="#8B5CF6"/><text x="300" y="11" class="muted tiny">Output</text>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(80 680)" filter="url(#shadow)">
+    <rect class="panel" width="1280" height="160" rx="16"/>
+    <rect x="0" y="0" width="1280" height="42" rx="16" fill="#f1f5f9"/>
+    <text x="24" y="27" class="label">TITLE</text>
+    <text x="322" y="27" class="label">WORKSPACE</text>
+    <text x="506" y="27" class="label">MODEL</text>
+    <text x="636" y="27" class="label">INPUT</text>
+    <text x="746" y="27" class="label">CACHE/INPUT</text>
+    <text x="906" y="27" class="label">OUTPUT/INPUT</text>
+    <text x="1086" y="27" class="label">HF COST ⓘ</text>
+
+    <line x1="0" y1="82" x2="1280" y2="82" stroke="#e2e8f0"/>
+    <line x1="0" y1="122" x2="1280" y2="122" stroke="#e2e8f0"/>
+
+    <text x="24" y="66" class="text small" font-weight="650">Python Store-CRM 项目实现</text>
+    <text x="24" y="80" class="mono tiny">8066f097-3f12-45a2-9ca4...</text>
+    <text x="322" y="66" class="muted small">store-crm-python</text>
+    <text x="506" y="66" class="muted small">gm51model</text>
+    <text x="636" y="66" class="muted small">17,067,830</text>
+    <text x="746" y="66" class="text small" fill="#F59E0B" font-weight="700">97.9%</text>
+    <text x="906" y="66" class="text small" fill="#8B5CF6" font-weight="700">0.6%</text>
+    <text x="1086" y="66" class="text small" fill="#0EA5E9" font-weight="700">$24.32</text>
+
+    <text x="24" y="106" class="text small" font-weight="650">Implement Store-CRM with Java</text>
+    <text x="24" y="120" class="mono tiny">be261ec1-6f60-460a-b74c...</text>
+    <text x="322" y="106" class="muted small">workspace</text>
+    <text x="506" y="106" class="muted small">gm51model</text>
+    <text x="636" y="106" class="muted small">13,118,164</text>
+    <text x="746" y="106" class="text small" fill="#F59E0B" font-weight="700">96.8%</text>
+    <text x="906" y="106" class="text small" fill="#8B5CF6" font-weight="700">0.7%</text>
+    <text x="1086" y="106" class="text small" fill="#0EA5E9" font-weight="700">$18.77</text>
+
+    <text x="24" y="146" class="text small" font-weight="650">Fix task per requirements.md</text>
+    <text x="24" y="160" class="mono tiny">7829493c-bb18-4804-ac4e...</text>
+    <text x="322" y="146" class="muted small">qoder-go-glm52</text>
+    <text x="506" y="146" class="muted small">gm51model</text>
+    <text x="636" y="146" class="muted small">8,713,395</text>
+    <text x="746" y="146" class="text small" fill="#F59E0B" font-weight="700">97.2%</text>
+    <text x="906" y="146" class="text small" fill="#8B5CF6" font-weight="700">0.4%</text>
+    <text x="1086" y="146" class="text small" fill="#0EA5E9" font-weight="700">$12.36</text>
+  </g>
+</svg>

@@ -2,6 +2,10 @@
 
 A command-line tool and local web dashboard for reading AI IDE session history (currently supports Qoder and QoderWork) and reporting per-session token usage, including input, cache read, and output tokens.
 
+## Preview
+
+![show-me-tokens web dashboard preview](docs/assets/dashboard-preview.svg)
+
 ## Disclaimer
 
 This project (show-me-tokens) is for personal learning, research, and communication purposes only.
