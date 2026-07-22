@@ -129,3 +129,9 @@ npm start
 ## License
 
 MIT
+
+## Note
+
+This project is for learning, research, and technical discussion only.
+
+本项目仅供学习、研究和技术交流使用。
