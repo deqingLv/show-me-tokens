@@ -12,78 +12,35 @@ This project (show-me-tokens) is for personal learning, research, and communicat
 - Before using this project, please ensure you have the right to access the relevant local data and comply with the terms of service of the corresponding software and applicable laws.
 - This project is provided "as is" without warranty.
 
-## Installation
+## Installation from source
 
-Use with `npx` (no install required):
-
-```bash
-# Start the web dashboard and open it in your browser
-npx show-me-tokens
-
-# Or run CLI subcommands
-npx show-me-tokens agents
-```
-
-Or install globally:
-
-```bash
-npm install -g show-me-tokens
-show-me-tokens agents
-```
-
-Or clone and run from source:
+The npm package has not been published yet. For now, clone this repository and run it locally:
 
 ```bash
 git clone https://github.com/lvdeqing/show-me-tokens.git
 cd show-me-tokens
 npm install
 npm run build
-npm test
 ```
 
-## CLI Usage
+Requirements:
 
-```bash
-# List supported agents
-show-me-tokens agents
-
-# Report Qoder token usage (default table output)
-show-me-tokens qoder
-
-# Filter by workspace, model, or session id
-show-me-tokens qoder --workspace /path/to/project
-show-me-tokens qoder --ws /path/to/project
-show-me-tokens qoder --model glm-5
-show-me-tokens qoder --session-id abc-123
-show-me-tokens qoder -s abc-123
-
-# Date range filters
-show-me-tokens qoder --since 2026-07-01 --until 2026-07-21
-
-# Output formats
-show-me-tokens qoder --format json
-show-me-tokens qoder --format csv
-
-# Specify a database path
-show-me-tokens qoder --db /path/to/local.db
-
-# QoderWork adapter
-show-me-tokens qoderwork
-```
+- Node.js 20+
+- macOS default database paths are supported out of the box; use `--db` if your database is elsewhere.
 
 ## Web Dashboard
 
-Start the local web UI:
+Start the local web UI from the repository directory:
 
 ```bash
 # Default: starts the server on http://localhost:3456 and opens the browser
-npx show-me-tokens
+npx .
 
 # Advanced: start without automatically opening the browser
-npx show-me-tokens --serve
+npx . --serve
 
 # Advanced: custom port and auto-open
-npx show-me-tokens --serve --port 3456 --open
+npx . --serve --port 3456 --open
 ```
 
 The dashboard lets you:
@@ -93,6 +50,45 @@ The dashboard lets you:
 - View summary cards and a token breakdown chart
 - Browse sessions with cache/input, output/input, and estimated Hugging Face cost columns
 - Export results as JSON or CSV
+
+## CLI Usage
+
+Run CLI commands from the repository directory:
+
+```bash
+# List supported agents
+npx . agents
+
+# Report Qoder token usage (default table output)
+npx . qoder
+
+# Filter by workspace, model, or session id
+npx . qoder --workspace /path/to/project
+npx . qoder --ws /path/to/project
+npx . qoder --model glm-5
+npx . qoder --session-id abc-123
+npx . qoder -s abc-123
+
+# Date range filters
+npx . qoder --since 2026-07-01 --until 2026-07-21
+
+# Output formats
+npx . qoder --format json
+npx . qoder --format csv
+
+# Specify a database path
+npx . qoder --db /path/to/local.db
+
+# QoderWork adapter
+npx . qoderwork
+```
+
+You can also run the built CLI directly:
+
+```bash
+node dist/cli.js agents
+node dist/cli.js qoder
+```
 
 ## Cost estimation
 
