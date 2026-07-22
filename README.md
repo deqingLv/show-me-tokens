@@ -107,6 +107,51 @@ Current built-in matches:
 
 Unknown models display `-` for cost. Cache read tokens are treated as part of input tokens and are not added again.
 
+## Publishing to npm
+
+This repository includes a GitHub Actions workflow at `.github/workflows/publish-npm.yml`.
+
+### 1. Create an npm automation token
+
+Create a token from npm:
+
+```text
+https://www.npmjs.com/settings/<your-npm-username>/tokens
+```
+
+Use an **Automation** token if your npm account has 2FA enabled.
+
+### 2. Add the token to GitHub Secrets
+
+In GitHub:
+
+```text
+Repository → Settings → Secrets and variables → Actions → New repository secret
+```
+
+Create this secret:
+
+```text
+NPM_TOKEN=<your npm token>
+```
+
+### 3. Publish a release
+
+Bump the package version, commit it, then push a version tag:
+
+```bash
+npm version patch
+git push --follow-tags
+```
+
+Any tag matching `v*` triggers the workflow and publishes the package with npm provenance enabled.
+
+You can also trigger it manually from:
+
+```text
+GitHub → Actions → Publish to npm → Run workflow
+```
+
 ## Development
 
 ```bash
