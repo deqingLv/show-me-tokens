@@ -1,73 +1,134 @@
 # show-me-tokens
 
-一个命令行工具，用于读取本地 AI IDE（当前支持 Qoder）的会话历史，统计每个会话消耗的 token 数量，包括 input、cache input、output 等。
+A command-line tool and local web dashboard for reading AI IDE session history (currently supports Qoder and QoderWork) and reporting per-session token usage, including input, cache read, and output tokens.
 
-A command-line tool that reads local AI IDE session history (currently supports Qoder) and reports per-session token usage, including input, cache input, and output tokens.
+## Disclaimer
 
-## 免责声明 / Disclaimer
+This project (show-me-tokens) is for personal learning, research, and communication purposes only.
 
-本项目（show-me-tokens）仅供个人学习、研究和交流使用。
+- This project is not affiliated with Qoder, ByteDance, or any other AI IDE vendor, nor is it endorsed by them.
+- It only reads local SQLite database files already present on your device and does not connect to remote services, APIs, or user accounts.
+- It does not upload, modify, or delete the data it reads.
+- Before using this project, please ensure you have the right to access the relevant local data and comply with the terms of service of the corresponding software and applicable laws.
+- This project is provided "as is" without warranty.
 
-- 本项目不隶属于 Qoder、ByteDance 或任何其他 AI IDE 工具的开发商，也不受其认可。
-- 本项目仅读取用户本地设备上已存在的 SQLite 数据库文件，不会连接任何远程服务、API 或用户账户。
-- 本项目不对读取的数据进行上传、修改或删除操作。
-- 使用本项目前，请确保您拥有访问相关本地数据的合法权利，并遵守相应软件的服务条款及所在地法律法规。
-- 本项目按“原样”提供，作者不对使用本项目产生的任何直接或间接后果承担责任。
+## Installation
 
-This project is provided for personal learning, research, and communication purposes only. It is not affiliated with or endorsed by Qoder, ByteDance, or any other AI IDE vendor. It only reads local SQLite files already present on your device and does not connect to remote services, APIs, or user accounts. Please ensure you have the right to access the relevant local data and comply with the terms of service of the corresponding software and applicable laws. This project is provided "as is" without warranty.
-
-## 安装 / Installation
+Use with `npx` (no install required):
 
 ```bash
-pip install show-me-tokens
+# Start the web dashboard and open it in your browser
+npx show-me-tokens
+
+# Or run CLI subcommands
+npx show-me-tokens agents
 ```
 
-或从源码安装：
+Or install globally:
+
+```bash
+npm install -g show-me-tokens
+show-me-tokens agents
+```
+
+Or clone and run from source:
 
 ```bash
 git clone https://github.com/lvdeqing/show-me-tokens.git
 cd show-me-tokens
-pip install -e ".[dev]"
+npm install
+npm run build
+npm test
 ```
 
-## 用法 / Usage
+## CLI Usage
 
 ```bash
-# 查看 Qoder IDE 所有会话的 token 统计
+# List supported agents
+show-me-tokens agents
+
+# Report Qoder token usage (default table output)
 show-me-tokens qoder
 
-# 按工作区过滤
+# Filter by workspace, model, or session id
 show-me-tokens qoder --workspace /path/to/project
+show-me-tokens qoder --ws /path/to/project
+show-me-tokens qoder --model glm-5
+show-me-tokens qoder --session-id abc-123
+show-me-tokens qoder -s abc-123
 
-# 按日期范围过滤
+# Date range filters
 show-me-tokens qoder --since 2026-07-01 --until 2026-07-21
 
-# 查看 QoderWork 会话
-show-me-tokens qoderwork
-
-# 输出 JSON
+# Output formats
 show-me-tokens qoder --format json
+show-me-tokens qoder --format csv
 
-# 指定数据库路径
+# Specify a database path
 show-me-tokens qoder --db /path/to/local.db
 
-# 列出支持的 agent
-show-me-tokens agents
+# QoderWork adapter
+show-me-tokens qoderwork
 ```
 
-## 支持的 agents
+## Web Dashboard
 
-| Agent | 数据源 | 说明 |
-|---|---|---|
-| `qoder` | `~/Library/Application Support/Qoder/SharedClientCache/cache/db/local.db` | Qoder IDE 本地会话数据库 |
-| `qoderwork` | `~/Library/Application Support/QoderWork/data/agents.db` | QoderWork 本地会话数据库 |
-
-## 开发 / Development
+Start the local web UI:
 
 ```bash
-pip install -e ".[dev]"
-pytest
+# Default: starts the server on http://localhost:3456 and opens the browser
+npx show-me-tokens
+
+# Advanced: start without automatically opening the browser
+npx show-me-tokens --serve
+
+# Advanced: custom port and auto-open
+npx show-me-tokens --serve --port 3456 --open
 ```
+
+The dashboard lets you:
+
+- Switch between agents (Qoder / QoderWork)
+- Filter by workspace, session id, model, and date range
+- View summary cards and a token breakdown chart
+- Browse sessions with cache/input, output/input, and estimated Hugging Face cost columns
+- Export results as JSON or CSV
+
+## Cost estimation
+
+For matching GLM models, show-me-tokens estimates cost in USD using an embedded snapshot of Hugging Face Inference Providers prices. The table header links to the current Hugging Face pricing page: https://huggingface.co/inference/models
+
+Current built-in matches:
+
+| Model match | Hugging Face model | Provider | Input USD / 1M | Output USD / 1M |
+| ----------- | ------------------ | -------- | -------------- | --------------- |
+| `gm51`, `GLM-5.1` | `zai-org/GLM-5.1-FP8` | `fireworks-ai` | `$1.40` | `$4.40` |
+| `glm52`, `GLM-5.2` | `zai-org/GLM-5.2` | `deepinfra` | `$0.93` | `$3.00` |
+
+Unknown models display `-` for cost. Cache read tokens are treated as part of input tokens and are not added again.
+
+## Development
+
+```bash
+# Start the backend and frontend dev servers
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+
+# Start the production server
+npm start
+```
+
+## Supported Agents
+
+| Agent       | Default Data Source                                                              |
+| ----------- | -------------------------------------------------------------------------------- |
+| `qoder`     | `~/Library/Application Support/Qoder/SharedClientCache/cache/db/local.db`        |
+| `qoderwork` | `~/Library/Application Support/QoderWork/data/agents.db`                         |
 
 ## License
 
